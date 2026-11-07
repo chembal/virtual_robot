@@ -45,6 +45,13 @@ public abstract class MecanumPhysicsBase extends VirtualBot {
     private VirtualRobotController.DistanceSensorImpl[] distanceSensors = null;
     protected OctoQuadImpl octoQuad = null;
 
+    /**
+     * Subclasses may set entries (index order: back_left, front_left, front_right, back_right) to true to
+     * model a wheel whose motor is mounted with opposite polarity from the usual convention (left motors
+     * REVERSE and right motors FORWARD to drive forward).
+     */
+    protected final boolean[] wheelPolarityFlipped = new boolean[4];
+
     /*
      * Gear ratio for any external gears added in drive train. For now, this is just 1.0. Could easily
      * add a constructor to MecanumPhysicsBase that allows this to be set to some other value.
@@ -210,6 +217,7 @@ public abstract class MecanumPhysicsBase extends VirtualBot {
             if (
                     i<2 && (mtRev && dirRev || !mtRev && !dirRev) || i>=2 && (mtRev && !dirRev || !mtRev && dirRev)
             ) wSpd[i] = -wSpd[i];
+            if (wheelPolarityFlipped[i]) wSpd[i] = -wSpd[i];
         }
 
         /*

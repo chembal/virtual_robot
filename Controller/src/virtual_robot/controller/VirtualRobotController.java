@@ -304,7 +304,8 @@ public class VirtualRobotController {
         configClasses.addAll(reflections.getTypesAnnotatedWith(BotConfig.class));
         ObservableList<Class<?>> validConfigClasses = FXCollections.observableArrayList();
         for (Class<?> c: configClasses){
-            if (!c.getAnnotation(BotConfig.class).disabled() && VirtualBot.class.isAssignableFrom(c))
+            if (!c.getAnnotation(BotConfig.class).disabled() && VirtualBot.class.isAssignableFrom(c)
+                    && isWhitelisted(c, Config.BOT_WHITELIST))
                 validConfigClasses.add(c);
         }
         cbxConfig.setItems(validConfigClasses);
@@ -391,6 +392,14 @@ public class VirtualRobotController {
             }
         }
         return group;
+    }
+
+    private static boolean isWhitelisted(Class<?> c, String[] whitelist){
+        if (whitelist == null || whitelist.length == 0) return true;
+        for (String name : whitelist) {
+            if (c.getSimpleName().equals(name)) return true;
+        }
+        return false;
     }
 
     private void setupCbxOpModes(){

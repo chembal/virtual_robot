@@ -6,6 +6,7 @@ import virtual_robot.controller.Game;
 import virtual_robot.controller.VirtualBot;
 import virtual_robot.games.Decode;
 import virtual_robot.games.NoGame;
+import virtual_robot.robots.classes.BioBuzzBot;
 import virtual_robot.robots.classes.MecanumBot;
 
 /**
@@ -28,7 +29,13 @@ public class Config {
     /**
      * Whether to use "Virtual Gamepad" (true -> Virtual gamepad, false -> Real gamepad)
      */
-    public static final boolean USE_VIRTUAL_GAMEPAD = true;
+    public static final boolean USE_VIRTUAL_GAMEPAD = !Boolean.getBoolean("virtual_robot.realGamepad");
+
+    /**
+     * If non-empty, only bots whose class simple name is listed here appear in the bot dropdown.
+     * Set to an empty array to list every bot.
+     */
+    public static final String[] BOT_WHITELIST = { "BioBuzzBot" };
 
     /**
      * The image object for the field.
@@ -65,5 +72,5 @@ public class Config {
     /**
      *  Default Robot Configuration
      */
-    public static final Class<? extends VirtualBot> DEFAULT_BOT = MecanumBot.class;
+    public static final Class<? extends VirtualBot> DEFAULT_BOT = BioBuzzBot.class;
 }
