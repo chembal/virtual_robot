@@ -1,10 +1,26 @@
-# Rebuilds and launches virtual_robot with the Liberica 17 Full JDK (no IntelliJ needed).
+# Rebuilds and launches virtual_robot (no IntelliJ needed). Needs a JDK 17 with JavaFX, e.g. Liberica 17 Full;
+# it uses JAVA_HOME if that qualifies, else a Liberica Full install, else javac on PATH.
 # Usage: .\run-sim.ps1            -> on-screen virtual gamepad
 #        .\run-sim.ps1 -RealGamepad -> physical USB gamepad (press Start+A to assign it as gamepad1)
 param([switch]$RealGamepad)
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
-$jdk = 'C:\Program Files\BellSoft\LibericaJDK-17-Full\bin'
+
+# Find a JDK that has javac, javaw and JavaFX (Liberica "Full" bundles JavaFX; plain JDKs do not).
+$candidates = @()
+if ($env:JAVA_HOME) { $candidates += $env:JAVA_HOME }
+$candidates += @(Get-ChildItem 'C:\Program Files\BellSoft' -Directory -Filter 'LibericaJDK-*-Full' -ErrorAction SilentlyContinue |
+    Sort-Object Name -Descending | ForEach-Object FullName)
+$javac = Get-Command javac.exe -ErrorAction SilentlyContinue
+if ($javac) { $candidates += (Split-Path (Split-Path $javac.Source -Parent) -Parent) }
+$jdkHome = $candidates | Where-Object {
+    $_ -and (Test-Path "$_\bin\javac.exe") -and (Test-Path "$_\bin\javaw.exe") -and (Test-Path "$_\lib\javafx.properties")
+} | Select-Object -First 1
+if (-not $jdkHome) {
+    throw "No JDK with JavaFX found. Install 'Liberica JDK 17 Full' (https://bell-sw.com/pages/downloads/, choose Full) or set JAVA_HOME to a JDK that includes JavaFX."
+}
+Write-Host "Using JDK: $jdkHome"
+$jdk = "$jdkHome\bin"
 $out = 'out\cli'
 $cp = ((Get-ChildItem lib\*.jar | Where-Object Name -notmatch 'sources' | ForEach-Object FullName) -join ';')
 

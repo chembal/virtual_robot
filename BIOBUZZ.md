@@ -6,7 +6,7 @@ This fork adds a BioBuzz robot (goBILDA StarterBot, mecanum drive) and a BioBuzz
 ## Getting started
 
 1. Clone this repo, then run `.\setup.ps1`. It clones the robot code (`BioBuzzExample`) next to this folder.
-2. Open this folder in IntelliJ (Liberica 17 Full JDK), or just run a script:
+2. Open this folder in IntelliJ (any JDK 17 with JavaFX, e.g. Liberica 17 Full; `run-sim.ps1` finds it via `JAVA_HOME`, a Liberica install, or `javac` on PATH), or just run a script:
    - `.\run-sim.ps1` - on-screen virtual gamepad
    - `.\run-sim-gamepad.ps1` - USB gamepad (Logitech F310: set the back switch to **X**; press **Start+A** to make it gamepad1)
 
